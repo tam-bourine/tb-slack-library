@@ -23,6 +23,26 @@ app.command('/search_book', async({ack, body, context, payload})=>{
         console.log(error)
     }
 })
+
+interface SearchStateValue {
+    values: {
+        search:{search: {value: string}}
+    }
+}
+
+app.view('search_books', async({ack, body, context, view})=>{
+    ack()
+    const search_state_value = (view.state as SearchStateValue).values
+    const search_value = search_state_value.search.search.value
+
+    await app.client.chat.postMessage({
+        token: context.botToken,
+        channel: 'tb-slack-library',
+        text: '以下の本が見つかりました!!'
+    })
+})
+
+
 const run = async () => {
     await app.start(process.env.PORT || 3000)
 
