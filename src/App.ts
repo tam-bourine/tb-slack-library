@@ -2,6 +2,7 @@
 import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import { SearchFormModal } from "./Views";
+import {serialize} from "v8";
 
 dotenv.config()
 
@@ -10,7 +11,7 @@ const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET
 })
 
-app.command('/search_book', async({ack, body, context, payload})=>{
+app.command('/search_books', async({ack, body, context, payload})=>{
     ack()
     const user_name:string = body.user_name
     try {
@@ -38,7 +39,7 @@ app.view('search_books', async({ack, body, context, view})=>{
     await app.client.chat.postMessage({
         token: context.botToken,
         channel: 'tb-slack-library',
-        text: '以下の本が見つかりました!!'
+        text: `------検索結果------||　検索条件: ${search_value}`
     })
 })
 
