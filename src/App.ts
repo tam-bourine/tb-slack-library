@@ -3,6 +3,8 @@ import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import { SearchFormModal } from "./Views";
 import {serialize} from "v8";
+import axios from 'axios';
+import {log} from "util";
 
 dotenv.config()
 
@@ -35,12 +37,15 @@ app.view('search_books', async({ack, body, context, view})=>{
     ack()
     const search_state_value = (view.state as SearchStateValue).values
     const search_value = search_state_value.search.search.value
+    const encstr = encodeURI(search_value)
 
-    await app.client.chat.postMessage({
-        token: context.botToken,
-        channel: 'tb-slack-library',
-        text: `------検索結果------||　検索条件: ${search_value}`
+    ack()
+    const url = `https://script.google.com/macros/s/AKfycbwTVf3hLKDR9s-QXEIesfdLp0swgzBYFHpDjRh6huKhFLBUEzE/exec?key=${encstr}`
+    console.log(url)
+    await axios.request({
+        url
     })
+        .catch(console.error)
 })
 
 
