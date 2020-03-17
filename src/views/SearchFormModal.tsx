@@ -9,7 +9,8 @@ export default ({name}: {name:string}) => {
             </section>
             <Divider/>
             <Input label='検索' type='text' blockId='search' actionId='search' placeholder='例) node.js' required/>
-            <Select name='place' label='場所' placeholder='場所'>
+            <Select name='place' label='場所' placeholder='場所' actionId='place' blockId='place' required>
+                <Option value='東京&大阪'>東京と大阪</Option>
                 <Option value='東京'>東京</Option>
                 <Option value='大阪'>大阪</Option>
             </Select>
