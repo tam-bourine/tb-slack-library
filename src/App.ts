@@ -30,6 +30,7 @@ app.command('/search_books', async({ack, body, context, payload})=>{
 interface SearchStateValue {
     values: {
         search:{search: {value: string}}
+        place:{place: {selected_option: {value: string}}}
     }
 }
 
@@ -37,10 +38,12 @@ app.view('search_books', async({ack, body, context, view})=>{
     ack()
     const search_state_value = (view.state as SearchStateValue).values
     const search_value = search_state_value.search.search.value
-    const encstr = encodeURI(search_value)
-
+    const search_state = search_state_value.place.place.selected_option || {value: null}
+    const search_place = search_state.value
+    const encKey = encodeURI(search_value)
+    const encPlace = encodeURI(search_place)
     ack()
-    const url = `https://script.google.com/macros/s/AKfycbwTVf3hLKDR9s-QXEIesfdLp0swgzBYFHpDjRh6huKhFLBUEzE/exec?key=${encstr}`
+    const url = `https://script.google.com/macros/s/AKfycbzHHRQOvK5xjA1OVAjSU2iTUytkB83DuS__NdSkDbsYwZ2bRf4/exec?key=${encKey}&place=${encPlace}`
     console.log(url)
     await axios.request({
         url
