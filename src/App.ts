@@ -38,15 +38,14 @@ app.view('search_books', async({ack, body, context, view})=>{
     ack()
     const search_state_value = (view.state as SearchStateValue).values
     const search_value = search_state_value.search.search.value
-    const search_state = search_state_value.place.place.selected_option || {value: null}
+    const search_state = search_state_value.place.place.selected_option || {value: 'unselected'}
     const search_place = search_state.value
-    const encKey = encodeURI(search_value)
-    const encPlace = encodeURI(search_place)
     ack()
-    const url = `https://script.google.com/macros/s/AKfycbzHHRQOvK5xjA1OVAjSU2iTUytkB83DuS__NdSkDbsYwZ2bRf4/exec?key=${encKey}&place=${encPlace}`
+    const url = 'https://script.google.com/macros/s/AKfycbzHHRQOvK5xjA1OVAjSU2iTUytkB83DuS__NdSkDbsYwZ2bRf4/exec'
     console.log(url)
-    await axios.request({
-        url
+    await axios.post(url,{
+        key: search_value,
+        place: search_place
     })
         .catch(console.error)
 })
