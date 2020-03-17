@@ -13,7 +13,7 @@ const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET
 })
 
-app.command('/search_books', async({ack, body, context, payload})=>{
+app.command('/search_book', async({ack, body, context, payload})=>{
     ack()
     const user_name:string = body.user_name
     try {
