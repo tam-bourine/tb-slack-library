@@ -38,7 +38,8 @@ app.view('search_books', async({ack, body, context, view})=>{
     ack()
     const search_state_value = (view.state as SearchStateValue).values
     const search_value = search_state_value.search.search.value
-    const search_place = search_state_value.place.place.selected_option.value
+    const search_state = search_state_value.place.place.selected_option || {value: null}
+    const search_place = search_state.value
     const encKey = encodeURI(search_value)
     const encPlace = encodeURI(search_place)
     ack()
