@@ -1,30 +1,32 @@
-export default() => {
-    return{
-        "blocks": [
+export default({data}:any) => {
+    let blockKit = []
+    blockKit.push(
+    {
+        "type": "context",
+        "elements":[
             {
-             "type": "context",
-             "elements":[
-               {
-                 "type": "mrkdwn",
-                 "text": "の検索結果"
-               }
-             ]
+                "type": "mrkdwn",
+                "text": "の検索結果"
+            }
+        ]
+    },
+    )
+    for(let i in data){
+        blockKit.push(
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": ":books: " + data[i].name + "\n" + ":office: " + data[i].place
+                    }
+                ],
             },
-           {
-             "type": "divider"
-           },
-           {
-               "type": "context",
-               "elements": [
-                 {
-                   "type": "mrkdwn",
-                   "text": ":books:  :office:" 
-                 }
-               ]
-             },
-             {
-               "type": "divider"
-             }
-       ]
+            {
+                "type": "divider"
+            }
+        )
     }
+    console.log(blockKit)
+    return blockKit
 }

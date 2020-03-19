@@ -1,7 +1,7 @@
 // @ts-ignore
 import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
-import { SearchFormModal } from "./Views";
+import { SearchFormModal,ShowResult } from "./Views";
 import axios from 'axios';
 import date from "@speee-js/jsx-slack/types/date";
 
@@ -18,7 +18,7 @@ app.command('/search_books', async({ack, body, context, payload})=>{
     ack()
     const user_name:string = body.user_name
     try {
-        app.client.views.open({
+        await app.client.views.open({
             token: context.botToken,
             trigger_id: payload.trigger_id,
             view: SearchFormModal({name: user_name})
@@ -27,12 +27,14 @@ app.command('/search_books', async({ack, body, context, payload})=>{
         console.log(error)
     }
 })
+
 interface SearchStateValue {
     values: {
         search:{search: {value: string}}
         place:{place: {selected_option: {value: string}}}
     }
 }
+
 app.view('search_books', async({ack, body, context, view})=>{
     ack()
     const search_state_value = (view.state as SearchStateValue).values
@@ -46,13 +48,18 @@ app.view('search_books', async({ack, body, context, view})=>{
         key: search_value,
         place: search_place
     })
-        .then(function (response) {
+        .then(async function (response) {
             const search_result:Array<object> = response.data.result
             console.log(search_result)
-            //SearchFormModal({data:search_result})
+            ShowResult({data:search_result})
+           /* const postLink = `https://slack.com/api/chat.postMessage?token=${process.env.SLACK_BOT_TOKEN}&channel=tb-slack-library&text=${edata}`
+            await axios.get(postLink)
+                .catch(console.error)*/
         })
         .catch(console.error)
+
 })
+
 
 
 const run = async () => {
