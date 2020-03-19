@@ -5,12 +5,14 @@ import { SearchFormModal } from "./Views";
 import axios from 'axios';
 import date from "@speee-js/jsx-slack/types/date";
 
-dotenv.config()
 
+dotenv.config()
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET
 })
+
+
 
 app.command('/search_books', async({ack, body, context, payload})=>{
     ack()
@@ -25,14 +27,12 @@ app.command('/search_books', async({ack, body, context, payload})=>{
         console.log(error)
     }
 })
-
 interface SearchStateValue {
     values: {
         search:{search: {value: string}}
         place:{place: {selected_option: {value: string}}}
     }
 }
-
 app.view('search_books', async({ack, body, context, view})=>{
     ack()
     const search_state_value = (view.state as SearchStateValue).values
@@ -54,9 +54,9 @@ app.view('search_books', async({ack, body, context, view})=>{
         .catch(console.error)
 })
 
+
 const run = async () => {
     await app.start(process.env.PORT || 3000)
-
     console.log('⚡️ Bolt app is running!')
 }
 run()
