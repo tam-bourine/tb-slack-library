@@ -41,8 +41,7 @@ app.view('search_books', async({ack, body, context, view})=>{
     const search_state = search_state_value.place.place.selected_option || {value: 'unselected'}
     const search_place = search_state.value
     ack()
-    const url = 'https://script.google.com/macros/s/AKfycbwTVf3hLKDR9s-QXEIesfdLp0swgzBYFHpDjRh6huKhFLBUEzE/exec'
-    console.log(url)
+    const url = 'https://script.google.com/macros/s/AKfycbzHHRQOvK5xjA1OVAjSU2iTUytkB83DuS__NdSkDbsYwZ2bRf4/exec'
     await axios.post(url,{
         key: search_value,
         place: search_place
@@ -50,9 +49,8 @@ app.view('search_books', async({ack, body, context, view})=>{
         .then(async function (response) {
             const search_result:Array<object> = response.data.result
             const url = "https://slack.com/api/chat.postMessage"
-            console.log(search_result)
             if(search_result.length != 0){
-                const result = await axios.request({
+                await axios.request({
                     headers:{
                         'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
                     },
@@ -64,9 +62,8 @@ app.view('search_books', async({ack, body, context, view})=>{
                     }
                 })
                     .catch(console.error)
-                console.log(result)
             }else{
-                const result = await axios.request({
+                await axios.request({
                     headers:{
                         'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
                     },
@@ -78,7 +75,6 @@ app.view('search_books', async({ack, body, context, view})=>{
                     }
                 })
                     .catch(console.error)
-                console.log(result)
             }
         })
         .catch(console.error)

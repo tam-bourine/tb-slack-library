@@ -42,6 +42,5 @@ export default(seach_value: string) => {
           ]
         }
     ]
-    //console.log(blockKit)
     return blockKit;
 }

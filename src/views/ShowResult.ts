@@ -29,7 +29,6 @@ export default({data}:any, {key}:any) => {
             }
         )
     }
-    console.log(blockKit.length)
     if (blockKit.length>50 ){
         let postResult = []
         let i,j,temparray,chunk = 50;
@@ -37,11 +36,8 @@ export default({data}:any, {key}:any) => {
             temparray = blockKit.slice(i,i+chunk);
             postResult.push(temparray)
         }
-        console.log("hoge")
-        console.log(postResult[0])
         return postResult[0]
     }else {
-        console.log("hoge!!!")
         return blockKit
     }
 }
