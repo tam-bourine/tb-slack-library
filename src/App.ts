@@ -3,7 +3,6 @@ import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import { SearchFormModal,ShowResult } from "./Views";
 import axios from 'axios';
-import date from "@speee-js/jsx-slack/types/date";
 
 
 dotenv.config()
@@ -50,11 +49,22 @@ app.view('search_books', async({ack, body, context, view})=>{
     })
         .then(async function (response) {
             const search_result:Array<object> = response.data.result
+            const url = "https://slack.com/api/chat.postMessage"
             console.log(search_result)
             ShowResult({data:search_result})
-           /* const postLink = `https://slack.com/api/chat.postMessage?token=${process.env.SLACK_BOT_TOKEN}&channel=tb-slack-library&text=${edata}`
-            await axios.get(postLink)
-                .catch(console.error)*/
+            const result = await axios.request({
+                headers:{
+                    'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
+                },
+                url,
+                method: "POST",
+                data: {
+                    channel: "tb-slack-library",
+                    blocks: ShowResult({data:search_result})
+                }
+            })
+                .catch(console.error)
+            console.log(result)
         })
         .catch(console.error)
 
