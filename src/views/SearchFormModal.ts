@@ -3,7 +3,7 @@ export default ({name}:any):any => {
         "type": "modal",
         "title": {
           "type": "plain_text",
-          "text": "本を探す",
+          "text": "本を探す :books:",
           "emoji": true
         },
         "callback_id": "search_books",
@@ -22,7 +22,7 @@ export default ({name}:any):any => {
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": `ようこそ、${name}さん！`,
+              "text": `:book: ようこそ、${name}さん！`,
               "verbatim": true
             }
           },
@@ -34,7 +34,7 @@ export default ({name}:any):any => {
             "block_id": "search",
             "label": {
               "type": "plain_text",
-              "text": "検索",
+              "text": "キーワード",
               "emoji": true
             },
             "optional": false,
@@ -43,7 +43,7 @@ export default ({name}:any):any => {
               "action_id": "search",
               "placeholder": {
                 "type": "plain_text",
-                "text": "例) node.js",
+                "text": "例) デザイン",
                 "emoji": false
               }
             }
@@ -53,7 +53,7 @@ export default ({name}:any):any => {
             "block_id": "place",
             "label": {
               "type": "plain_text",
-              "text": "場所",
+              "text": "オフィス",
               "emoji": true
             },
             "optional": true,
@@ -62,7 +62,7 @@ export default ({name}:any):any => {
               "action_id": "place",
               "placeholder": {
                 "type": "plain_text",
-                "text": "場所",
+                "text": "オフィスを選択",
                 "emoji": true
               },
               "options": [
@@ -70,7 +70,7 @@ export default ({name}:any):any => {
                   "value": "東京",
                   "text": {
                     "type": "plain_text",
-                    "text": "東京",
+                    "text": "東京オフィス",
                     "emoji": true
                   }
                 },
@@ -78,7 +78,7 @@ export default ({name}:any):any => {
                   "value": "大阪",
                   "text": {
                     "type": "plain_text",
-                    "text": "大阪",
+                    "text": "大阪オフィス",
                     "emoji": true
                   }
                 }
