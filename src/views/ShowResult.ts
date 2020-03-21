@@ -1,43 +1,71 @@
-export default({data}:any, {key}:any) => {
+export default({data}:any) => {
     let blockKit:Array<any> = []
-    blockKit.push(
-    {
-        "type": "context",
-        "elements":[
-            {
-                "type": "mrkdwn",
-                "text": `:mag:　*${key}*の検索結果\n　検索結果は上位25件を表示します！！\n　多すぎる場合は検索条件を絞ってください！`
-            }
-        ]
-    },
-    )
-    let j = 0
     for(let i in data){
-        j += 1
         blockKit.push(
             {
                 "type": "context",
                 "elements": [
                     {
                         "type": "mrkdwn",
-                        "text": `${j}件目\n:books:${data[i].name}\n:office:${data[i].place}`
+                        "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
                     }
                 ],
             },
             {
                 "type": "divider"
-            }
+            },
         )
     }
-    if (blockKit.length>50 ){
-        let postResult = []
-        let i,j,temparray,chunk = 50;
+    if (blockKit.length>20 ){
+        let pages = Math.floor(blockKit.length/20)+1
+        let postResult:any = []
+        let i,j,temparray,chunk = 20;
         for (i=0,j=blockKit.length; i<j; i+=chunk) {
             temparray = blockKit.slice(i,i+chunk);
             postResult.push(temparray)
         }
+        for(let i in postResult ){
+            postResult[i].push(
+                {
+                    "type": "context",
+                    "elements":[
+                        {
+                            "type": "mrkdwn",
+                            "text": `${pages}ページ中${parseInt(i)+1}ページ目を表示中`
+                        }
+                    ]
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "次の10件を表示する",
+                                "emoji": true
+                            },
+                            "style": "primary",
+                            "value": "click_me_123",
+                            "action_id": "nextPage"
+                        },
+                    ]
+                }
+            )
+        }
         return postResult[0]
     }else {
+        blockKit.push(
+            {
+                "type": "context",
+                "elements":[
+                    {
+                        "type": "mrkdwn",
+                        "text": `1ページ中1ページ目を表示中`
+                    }
+                ]
+            },
+        )
         return blockKit
     }
 }
