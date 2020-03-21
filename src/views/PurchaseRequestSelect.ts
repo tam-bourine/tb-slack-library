@@ -39,7 +39,7 @@ export default(search_value: string) => {
                 },
                 "style": "danger",
                 "value": "出さない",
-                    "action_id": "purchaseCancel"
+                    "action_id": "finishSearch"
                 }
             ]
         }

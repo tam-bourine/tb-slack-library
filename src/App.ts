@@ -63,9 +63,11 @@ app.view('search_books', async ({ack, body, view})=>{
                     const deleteUrl = body.response_url
                     await DeleteMessage({deleteUrl:deleteUrl})
                     //ページの変更
-                    page ++
-                    blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                    await PageChangePost({blocks: blocks}, {user_id: user_id})
+                    if (page<100000){
+                        page ++
+                        blocks = ChangePage({data:search_result},{key:search_value},{page:page})
+                        await PageChangePost({blocks: blocks}, {user_id: user_id})
+                    }
                 });
                     //前のページの検索結果を見る
                 app.action('behindPage',async ({ack,body})=>{
@@ -74,9 +76,19 @@ app.view('search_books', async ({ack, body, view})=>{
                     const deleteUrl = body.response_url
                     await DeleteMessage({deleteUrl:deleteUrl})
                     //ページの移動
-                    page --
-                    blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                    await PageChangePost({blocks: blocks}, {user_id: user_id})
+                    if (page<100000){
+                        page --
+                        blocks = ChangePage({data:search_result},{key:search_value},{page:page})
+                        await PageChangePost({blocks: blocks}, {user_id: user_id})
+                    }
+                })
+                //検索を終了する
+                app.action("finishSearch",async ({ack,body})=>{
+                    ack()
+                    //ページ遷移バグ回避のため(ページを削除してもデータから削除されないため、最新のコメントのみを動かす処理)
+                    page = 1000000
+                    const deleteUrl:string = body.response_url
+                    await DeleteMessage({deleteUrl:deleteUrl})
                 })
             }else{
                 //本が見つからなかった時
@@ -135,11 +147,13 @@ app.view("request_book",async ({ack,body,view})=>{
     })
 })
 
-app.action("purchaseCancel",async ({ack,body})=>{
+//複数ページない場合はページ定義なしで終了
+app.action("finishSearch",async ({ack,body})=>{
     ack()
     const deleteUrl:string = body.response_url
     await DeleteMessage({deleteUrl:deleteUrl})
 })
+
 //アプリの起動処理
 const run = async () => {
     await app.start(process.env.PORT || 3000)

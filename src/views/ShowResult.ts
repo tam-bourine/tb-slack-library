@@ -42,6 +42,16 @@ export default({data}:any) => {
                             "type": "button",
                             "text": {
                                 "type": "plain_text",
+                                "text": "検索を終了する",
+                                "emoji": true
+                            },
+                            "value": "click_me_123",
+                            "action_id": "finishSearch"
+                        },
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
                                 "text": "次の10件を表示する",
                                 "emoji": true
                             },
@@ -65,6 +75,42 @@ export default({data}:any) => {
                     }
                 ]
             },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "検索を終了する",
+                            "emoji": true
+                        },
+                        "value": "click_me_123",
+                        "action_id": "finishSearch"
+                    },
+                ]
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "探していた本は見つかりましたか？:smile:\n:pencil: 見つからない場合、購入依頼を出すことが出来ます！"
+                },
+                "accessory": {
+                    "type": "button",
+                    "style":"primary",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "購入依頼を出す",
+                        "emoji": true
+                    },
+                    "value": "click_me_123",
+                    "action_id": "purchaseRequest"
+                }
+            }
         )
         return blockKit
     }
