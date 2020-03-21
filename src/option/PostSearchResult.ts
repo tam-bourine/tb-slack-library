@@ -1,0 +1,24 @@
+import axios from "axios";
+
+export default async ({blocks}:any, {user_id}:any,{search_value}:any,{search_result}:any)=>{
+    const url = "https://slack.com/api/chat.postEphemeral"
+    await axios.request({
+        headers:{
+            'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
+        },
+        url,
+        method: "POST",
+        data: {
+            channel: "tb-slack-library",
+            text:`:mag:　*${search_value}*の検索結果\n:penguin:　${search_result.length}件の本が見つかりました！`,
+            attachments: [
+                {
+                    "color": "#64B5F6",
+                    "blocks": blocks
+                }
+            ],
+            user: user_id
+        }
+    })
+        .catch(console.error)
+}

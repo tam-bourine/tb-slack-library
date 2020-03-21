@@ -2,7 +2,7 @@
 import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import { SearchFormModal,ShowResult, PurchaseRequestSelect, ChangePage, PurchaseRequestModal } from "./Views";
-import { DeleteMessage } from "./Options"
+import { DeleteMessage,PageChangePost,PostPurchaseRequest, PostSearchResult } from "./Options"
 import axios from 'axios';
 
 //botトークン
@@ -36,13 +36,11 @@ interface SearchStateValue {
 //検索結果の表示
 app.view('search_books', async ({ack, body, view})=>{
     ack()
-    //送信するデータをセット
-    let message_ts = ""
     const search_state_value = (view.state as SearchStateValue).values
     const search_value = search_state_value.search.search.value
     const search_state = search_state_value.place.place.selected_option || {value: 'unselected'}
     const search_place = search_state.value
-    ack()
+    //送信するデータをセット
     //gasで検索処理
     const url = 'https://script.google.com/macros/s/AKfycbzHHRQOvK5xjA1OVAjSU2iTUytkB83DuS__NdSkDbsYwZ2bRf4/exec'
     await axios.post(url,{
@@ -52,30 +50,11 @@ app.view('search_books', async ({ack, body, view})=>{
         //レスポンス処理
         .then(async function (response) {
             const search_result:Array<object> = response.data.result
-            const url = "https://slack.com/api/chat.postEphemeral"
             const user_id = body.user.id
             //本が見つかった時
             if(search_result.length != 0){
                 let blocks = ShowResult({data:search_result})
-                await axios.request({
-                    headers:{
-                        'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
-                    },
-                    url,
-                    method: "POST",
-                    data: {
-                        channel: "tb-slack-library",
-                        text:`:mag:　*${search_value}*の検索結果\n:penguin:　${search_result.length}件の本が見つかりました！`,
-                        attachments: [
-                            {
-                                "color": "#64B5F6",
-                                "blocks": blocks
-                            }
-                        ],
-                        user: user_id
-                    }
-                })
-                    .catch(console.error)
+                await PostSearchResult({blocks:blocks},{user_id:user_id},{search_value:search_value},{search_result:search_result})
                 //次のページの検索結果を見る
                 let page = 1
                 app.action('nextPage',async ({ack,body})=>{
@@ -86,24 +65,7 @@ app.view('search_books', async ({ack, body, view})=>{
                     //ページの変更
                     page ++
                     blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                    const url = "https://slack.com/api/chat.postEphemeral"
-                    await axios.request({
-                        headers:{
-                            'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
-                        },
-                        url,
-                        method: "POST",
-                        data: {
-                            channel: "tb-slack-library",
-                            attachments: [
-                                {
-                                    "color": "#64B5F6",
-                                    "blocks": blocks
-                                }
-                            ],
-                            user: user_id
-                        }
-                    })
+                    await PageChangePost({blocks: blocks}, {user_id: user_id})
                 });
                     //前のページの検索結果を見る
                 app.action('behindPage',async ({ack,body})=>{
@@ -114,44 +76,13 @@ app.view('search_books', async ({ack, body, view})=>{
                     //ページの移動
                     page --
                     blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                    await axios.request({
-                        headers:{
-                            'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
-                        },
-                        url,
-                        method: "POST",
-                        data: {
-                            channel: "tb-slack-library",
-                            attachments: [
-                                {
-                                    "color": "#64B5F6",
-                                    "blocks": blocks
-                                }
-                            ],
-                            user: user_id
-                        }
-                    })
+                    await PageChangePost({blocks: blocks}, {user_id: user_id})
                 })
             }else{
                 //本が見つからなかった時
-                await axios.request({
-                    headers:{
-                        'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
-                    },
-                    url,
-                    method: "POST",
-                    data: {
-                        channel: "tb-slack-library",
-                        attachments: [
-                            {
-                                "color": "#F9A825",
-                                "blocks": PurchaseRequestSelect(search_value),
-                            }
-                        ],
-                        user: user_id
-                    }
-                })
-                    .catch(console.error)
+                let blocks = PurchaseRequestSelect(search_value)
+                await PostPurchaseRequest({blocks:blocks},{user_id:user_id})
+
             }
         })
         .catch(console.error)
