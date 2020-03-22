@@ -60,6 +60,24 @@ export default({data}:any) => {
                             "action_id": "nextPage"
                         },
                     ]
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "探していた本は見つかりましたか？:smile:\n:pencil: 見つからない場合、購入依頼を出すことが出来ます！"
+                    },
+                    "accessory": {
+                        "type": "button",
+                        "style":"primary",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "購入依頼を出す",
+                            "emoji": true
+                        },
+                        "value": "click_me_123",
+                        "action_id": "purchaseRequest"
+                    }
                 }
             )
         }

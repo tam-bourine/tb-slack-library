@@ -1,8 +1,9 @@
 // @ts-ignore
 import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
-import { SearchFormModal,ShowResult, PurchaseRequestSelect, ChangePage, PurchaseRequestModal } from "./Views";
-import { DeleteMessage,PageChangePost,PostPurchaseRequest, PostSearchResult } from "./Options"
+import {PurchaseRequestModal, SearchFormModal} from "./Modals"
+import { ShowResult, PurchaseRequestSelect, ChangePage,Compleate, Failed } from "./Views";
+import { DeleteMessage,PostChangePage,PostPurchaseRequest, PostSearchResult, PostCompleate, PostFailed } from "./Options"
 import axios from 'axios';
 
 //botトークン
@@ -66,7 +67,7 @@ app.view('search_books', async ({ack, body, view})=>{
                     if (page<100000){
                         page ++
                         blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                        await PageChangePost({blocks: blocks}, {user_id: user_id})
+                        await PostChangePage({blocks: blocks}, {user_id: user_id})
                     }
                 });
                     //前のページの検索結果を見る
@@ -79,7 +80,7 @@ app.view('search_books', async ({ack, body, view})=>{
                     if (page<100000){
                         page --
                         blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                        await PageChangePost({blocks: blocks}, {user_id: user_id})
+                        await PostChangePage({blocks: blocks}, {user_id: user_id})
                     }
                 })
                 //検索を終了する
@@ -110,6 +111,8 @@ app.action("purchaseRequest",async ({ack,body,payload,context})=>{
                 trigger_id: body.trigger_id,
                 view: PurchaseRequestModal()
             });
+            const deleteUrl:string = body.response_url
+            await DeleteMessage({deleteUrl:deleteUrl})
         }
     }catch (error) {
         console.log(error)
@@ -136,14 +139,27 @@ app.view("request_book",async ({ack,body,view})=>{
     const request_about = request_state_value.about.about.value
     const url = 'https://script.google.com/macros/s/AKfycbzHHRQOvK5xjA1OVAjSU2iTUytkB83DuS__NdSkDbsYwZ2bRf4/exec'
     await axios.post(url,{
-        user: request_user,
-        title: request_title,
-        place: request_place,
-        about: request_about
+        reqUser: request_user,
+        reqTitle: request_title,
+        reqPlace: request_place,
+        reqAbout: request_about
     }).then(async function (response) {
         if (response.status===200){
-            console.log("OK")
+            console.log("購入依頼完了")
+            const user_id = body.user.id
+            let blocks = Compleate()
+            await PostCompleate({blocks:blocks},{user_id:user_id})
+        } else {
+            console.log("購入依頼失敗")
+            const user_id = body.user.id
+            let blocks = Failed()
+            await PostFailed({blocks: blocks}, {user_id: user_id})
         }
+    }).catch(async function () {
+        console.log("購入依頼失敗")
+        const user_id = body.user.id
+        let blocks = Failed()
+        await PostFailed({blocks: blocks}, {user_id: user_id})
     })
 })
 
@@ -153,6 +169,7 @@ app.action("finishSearch",async ({ack,body})=>{
     const deleteUrl:string = body.response_url
     await DeleteMessage({deleteUrl:deleteUrl})
 })
+
 
 //アプリの起動処理
 const run = async () => {

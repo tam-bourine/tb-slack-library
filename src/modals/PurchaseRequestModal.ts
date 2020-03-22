@@ -10,12 +10,12 @@ export default ():any => {
         "submit": {
             "type": "plain_text",
             "text": "依頼を出す",
-            "emoji": true
+            "emoji": true,
         },
         "close": {
             "type": "plain_text",
             "text": "キャンセル",
-            "emoji": true
+            "emoji": true,
         },
         "blocks": [
             {
