@@ -1,21 +1,41 @@
-export default({data}:any) => {
+export default({data}:any, {search_place}:any) => {
     let blockKit:Array<any> = []
-    for(let i in data){
-        blockKit.push(
-            {
-                "type": "context",
-                "elements": [
-                    {
-                        "type": "mrkdwn",
-                        "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
-                    }
-                ],
-            },
-            {
-                "type": "divider"
-            },
-        )
+    if(search_place == "unselected"){
+        for(let i in data){
+            blockKit.push(
+                {
+                    "type": "context",
+                    "elements": [
+                        {
+                            "type": "mrkdwn",
+                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
+                        }
+                    ],
+                },
+                {
+                    "type": "divider"
+                },
+            )
+        }
+    }else{
+        for(let i in data){
+            blockKit.push(
+                {
+                    "type": "context",
+                    "elements": [
+                        {
+                            "type": "mrkdwn",
+                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}`
+                        }
+                    ],
+                },
+                {
+                    "type": "divider"
+                },
+            )
+        }
     }
+    
     if (blockKit.length>20 ){
         let pages = Math.floor(blockKit.length/20)+1
         let postResult:any = []
