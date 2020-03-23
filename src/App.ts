@@ -38,9 +38,9 @@ interface SearchStateValue {
 app.view('search_books', async ({ack, body, view})=>{
     ack()
     const search_state_value = (view.state as SearchStateValue).values
-    const search_value = search_state_value.search.search.value
-    const search_state = search_state_value.place.place.selected_option || {value: 'unselected'}
-    const search_place = search_state.value
+    const search_value:string = search_state_value.search.search.value
+    const search_state:{value:string} = search_state_value.place.place.selected_option || {value: 'unselected'}
+    const search_place :string= search_state.value
     //送信するデータをセット
     //gasで検索処理
     const url:string = `${process.env.GAS_SPREAD_SHEET}`
@@ -51,17 +51,17 @@ app.view('search_books', async ({ack, body, view})=>{
         //レスポンス処理
         .then(async function (response) {
             const search_result:Array<object> = response.data.result
-            const user_id = body.user.id
+            const user_id:string = body.user.id
             //本が見つかった時
             if(search_result.length != 0){
                 let blocks = ShowResult({data:search_result})
                 await PostSearchResult({blocks:blocks},{user_id:user_id},{search_value:search_value},{search_result:search_result})
                 //次のページの検索結果を見る
-                let page = 1
+                let page:number = 1
                 app.action('nextPage',async ({ack,body})=>{
                     ack()
                     //前のコメントを削除
-                    const deleteUrl = body.response_url
+                    const deleteUrl:string = body.response_url
                     await DeleteMessage({deleteUrl:deleteUrl})
                     //ページの変更
                     if (page<100000){
@@ -74,7 +74,7 @@ app.view('search_books', async ({ack, body, view})=>{
                 app.action('behindPage',async ({ack,body})=>{
                     ack()
                     //前のコメントを削除
-                    const deleteUrl = body.response_url
+                    const deleteUrl:string = body.response_url
                     await DeleteMessage({deleteUrl:deleteUrl})
                     //ページの移動
                     if (page<100000){
@@ -93,7 +93,7 @@ app.view('search_books', async ({ack, body, view})=>{
                 })
             }else{
                 //本が見つからなかった時
-                let blocks = PurchaseRequestSelect(search_value)
+                let blocks:Array<Object> = PurchaseRequestSelect(search_value)
                 await PostPurchaseRequest({blocks:blocks},{user_id:user_id})
 
             }
@@ -102,7 +102,7 @@ app.view('search_books', async ({ack, body, view})=>{
 })
 
 //購入依頼用モーダル
-app.action("purchaseRequest",async ({ack,body,payload,context})=>{
+app.action("purchaseRequest",async ({ack,body,context})=>{
     ack()
     try {
         if ("trigger_id" in body) {
@@ -133,31 +133,33 @@ app.view("request_book",async ({ack,body,view})=>{
     ack()
     //送信するデータをセット
     const request_state_value = (view.state as RequestStateValue).values
-    const request_user = body.user.name
-    const request_title = request_state_value.title.title.value
-    const request_place = request_state_value.place.place.selected_option.value
-    const request_about = request_state_value.about.about.value
-    const url = `${process.env.GAS_SPREAD_SHEET}`
+    const request_user:string = body.user.name
+    const request_title:string = request_state_value.title.title.value
+    const request_place:string = request_state_value.place.place.selected_option.value
+    const request_about:string = request_state_value.about.about.value
+    const url:string = `${process.env.GAS_SPREAD_SHEET}`
     await axios.post(url,{
         reqUser: request_user,
         reqTitle: request_title,
         reqPlace: request_place,
         reqAbout: request_about
     }).then(async function (response) {
+        //購入依頼が完了した時
         if (response.status===200){
             console.log("購入依頼完了")
-            const user_id = body.user.id
+            const user_id:string = body.user.id
             let blocks = Compleate()
             await PostCompleate({blocks:blocks},{user_id:user_id})
         } else {
+            //購入依頼が失敗した時
             console.log("購入依頼失敗")
-            const user_id = body.user.id
+            const user_id:string = body.user.id
             let blocks = Failed()
             await PostFailed({blocks: blocks}, {user_id: user_id})
         }
     }).catch(async function () {
         console.log("購入依頼失敗")
-        const user_id = body.user.id
+        const user_id:string = body.user.id
         let blocks = Failed()
         await PostFailed({blocks: blocks}, {user_id: user_id})
     })
