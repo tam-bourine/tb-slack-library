@@ -17,6 +17,7 @@ export default ():any => {
             "text": "キャンセル",
             "emoji": true,
         },
+        "notify_on_close":true,
         "blocks": [
             {
                 "type": "input",

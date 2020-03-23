@@ -5,11 +5,13 @@ import PostPurchaseRequest from "./options/PostPurchaseRequest";
 import PostSearchResult from "./options/PostSearchResult";
 import PostCompleate from "./options/PostCompleate";
 import PostFailed from "./options/PostFailed";
+import PostRequestCancel from "./options/PostRequestCancel";
 export {
     DeleteMessage,
     PostChangePage,
     PostPurchaseRequest,
     PostSearchResult,
     PostCompleate,
-    PostFailed
+    PostFailed,
+    PostRequestCancel
 }

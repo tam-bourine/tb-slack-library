@@ -2,8 +2,8 @@
 import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import {PurchaseRequestModal, SearchFormModal} from "./Modals"
-import { ShowResult, PurchaseRequestSelect, ChangePage,Compleate, Failed } from "./Views";
-import { DeleteMessage,PostChangePage,PostPurchaseRequest, PostSearchResult, PostCompleate, PostFailed } from "./Options"
+import { ShowResult, PurchaseRequestSelect, ChangePage,Compleate, Failed, RequestCancel } from "./Views";
+import { DeleteMessage,PostChangePage,PostPurchaseRequest, PostSearchResult, PostCompleate, PostFailed, PostRequestCancel } from "./Options"
 import axios from 'axios';
 
 //botトークン
@@ -27,6 +27,27 @@ app.command('/search_books', async({ack, body, context,payload})=>{
         console.log(error)
     }
 })
+//ボタンからの検索モーダル表示
+app.action("searchBooks",async ({ack,body,context})=>{
+    ack()
+    const user_name:string = body.user.name
+    try {
+        if ("trigger_id" in body) {
+            await app.client.views.open({
+                token: context.botToken,
+                trigger_id: body.trigger_id,
+                view: SearchFormModal({name:user_name})
+            });
+            const deleteUrl:string = body.response_url
+            await DeleteMessage({deleteUrl:deleteUrl})
+        }
+    }catch (error) {
+        console.log(error)
+    }
+
+})
+
+
 //検索モーダルからのデータ
 interface SearchStateValue {
     values: {
@@ -117,6 +138,7 @@ app.action("purchaseRequest",async ({ack,body,context})=>{
     }catch (error) {
         console.log(error)
     }
+
 })
 
 //購入依頼データ
@@ -129,7 +151,7 @@ interface RequestStateValue {
 }
 
 //購入依頼処理
-app.view("request_book",async ({ack,body,view})=>{
+app.view("request_book",async ({ack,body,view,payload})=>{
     ack()
     //送信するデータをセット
     const request_state_value = (view.state as RequestStateValue).values
@@ -144,6 +166,7 @@ app.view("request_book",async ({ack,body,view})=>{
         reqPlace: request_place,
         reqAbout: request_about
     }).then(async function (response) {
+        ack()
         //購入依頼が完了した時
         if (response.status===200){
             console.log("購入依頼完了")
@@ -164,7 +187,13 @@ app.view("request_book",async ({ack,body,view})=>{
         await PostFailed({blocks: blocks}, {user_id: user_id})
     })
 })
-
+//購入依頼がキャンセルされた時
+app.view({callback_id: 'request_book', type: 'view_closed'}, async ({ body,payload, ack }) => {
+    ack()
+    const user_id: string = body.user.id
+    let blocks = RequestCancel()
+    await PostRequestCancel({blocks: blocks},{user_id: user_id})
+})
 //複数ページない場合はページ定義なしで終了
 app.action("finishSearch",async ({ack,body})=>{
     ack()
