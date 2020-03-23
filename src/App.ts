@@ -43,7 +43,7 @@ app.view('search_books', async ({ack, body, view})=>{
     const search_place = search_state.value
     //送信するデータをセット
     //gasで検索処理
-    const url = 'https://script.google.com/macros/s/AKfycbzHHRQOvK5xjA1OVAjSU2iTUytkB83DuS__NdSkDbsYwZ2bRf4/exec'
+    const url:string = `${process.env.GAS_SPREAD_SHEET}`
     await axios.post(url,{
         key: search_value,
         place: search_place
@@ -137,7 +137,7 @@ app.view("request_book",async ({ack,body,view})=>{
     const request_title = request_state_value.title.title.value
     const request_place = request_state_value.place.place.selected_option.value
     const request_about = request_state_value.about.about.value
-    const url = 'https://script.google.com/macros/s/AKfycbzHHRQOvK5xjA1OVAjSU2iTUytkB83DuS__NdSkDbsYwZ2bRf4/exec'
+    const url = `${process.env.GAS_SPREAD_SHEET}`
     await axios.post(url,{
         reqUser: request_user,
         reqTitle: request_title,
