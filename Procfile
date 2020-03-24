@@ -1,1 +1,1 @@
-web: node --experimental-modules　./src/App.ts
+web: node　./src/App.ts
