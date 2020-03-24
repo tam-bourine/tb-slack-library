@@ -1,33 +1,40 @@
-export default({data}:any, {search_place}:any) => {
+export default({data}:any) => {
     let blockKit:Array<any> = []
-    if(search_place == "unselected"){
-        for(let i in data){
+    //オフィスが選択されていない時
+    for(let i in data){
+        if (data[i].image.match(/ISBN/)){
+            //画像があった時
             blockKit.push(
                 {
-                    "type": "context",
-                    "elements": [
-                        {
-                            "type": "mrkdwn",
-                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
-                        }
-                    ],
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
+                    },
+                    "accessory": {
+                        "type": "image",
+                        "image_url": "https://api.slack.com/img/blocks/bkb_template_images/palmtree.png",
+                        "alt_text": "palm tree"
+                    }
                 },
                 {
                     "type": "divider"
-                },
+                }
             )
-        }
-    }else{
-        for(let i in data){
+        }else{
+            //画像がない時
             blockKit.push(
                 {
-                    "type": "context",
-                    "elements": [
-                        {
-                            "type": "mrkdwn",
-                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}`
-                        }
-                    ],
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
+                    },
+                    "accessory": {
+                        "type": "image",
+                        "image_url": "http://placehold.jp/150x150.png?text=no_image",
+                        "alt_text": "palm tree"
+                    }
                 },
                 {
                     "type": "divider"
@@ -35,7 +42,7 @@ export default({data}:any, {search_place}:any) => {
             )
         }
     }
-    
+
     if (blockKit.length>20 ){
         let pages = Math.floor(blockKit.length/20)+1
         let postResult:any = []

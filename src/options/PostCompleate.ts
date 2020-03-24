@@ -9,7 +9,7 @@ export default async ({blocks}:any, {user_id}:any)=>{
         url,
         method: "POST",
         data: {
-            channel: "tb-slack-library",
+            channel: `${process.env.POST_CHANNEL_NAME}`,
             text:"",
             attachments: [
                 {

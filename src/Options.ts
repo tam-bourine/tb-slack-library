@@ -13,5 +13,5 @@ export {
     PostSearchResult,
     PostCompleate,
     PostFailed,
-    PostRequestCancel
+    PostRequestCancel,
 }

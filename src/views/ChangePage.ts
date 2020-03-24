@@ -1,37 +1,72 @@
 export default({data}:any, {key}:any, {page}:any) => {
     let blockKit:Array<any> = []
-    blockKit.push(
-        {
-            "type": "context",
-            "elements":[
-                {
-                    "type": "mrkdwn",
-                    "text": `:mag:　*${key}*の検索結果\n　検索結果は上位25件を表示します！！\n　多すぎる場合は検索条件を絞ってください！`
-                }
-            ]
-        },
-    )
     for(let i in data){
-        blockKit.push(
-            {
-                "type": "context",
-                "elements": [
+        if (data[i].image.match(/ISBN/)){
+            //画像があった時
+
+            if (""){
+                console.log("hoge")
+                blockKit.push(
                     {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
+                        },
+                        "accessory": {
+                            "type": "image",
+                            "image_url": ``,
+                            "alt_text": "palm tree"
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    }
+                )
+            }else {
+                blockKit.push(
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
+                        },
+                        "accessory": {
+                            "type": "image",
+                            "image_url": "http://placehold.jp/150x150.png?text=no_image",
+                            "alt_text": "palm tree"
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    }
+                )
+            }
+        }else{
+            blockKit.push(
+                {
+                    "type": "section",
+                    "text": {
                         "type": "mrkdwn",
                         "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
+                    },
+                    "accessory": {
+                        "type": "image",
+                        "image_url": "http://placehold.jp/150x150.png?text=no_image",
+                        "alt_text": "palm tree"
                     }
-                ],
-            },
-            {
-                "type": "divider"
-            }
-        )
+                },
+                {
+                    "type": "divider"
+                }
+            )
+        }
     }
     //検索結果を10件ずつに加工
-    if (blockKit.length>21 ){
-        let pages = Math.floor(blockKit.length/21)+1
+    if (blockKit.length>20 ){
+        let pages = Math.floor(blockKit.length/20)+1
         let postResult:any = []
-        let i,j,temparray,chunk = 21;
+        let i,j,temparray,chunk = 20;
         for (i=0,j=blockKit.length; i<j; i+=chunk) {
             temparray = blockKit.slice(i,i+chunk);
             postResult.push(temparray)

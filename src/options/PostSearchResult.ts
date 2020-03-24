@@ -10,7 +10,7 @@ export default async ({blocks}:any, {user_id}:any,{search_value}:any,{search_pla
             url,
             method: "POST",
             data: {
-                channel: "tb-slack-library",
+                channel: `${process.env.POST_CHANNEL_NAME}`,
                 text:`:mag:　:books: ${search_value} の検索結果\n:penguin:　${search_result.length}件の本が見つかりました！`,
                 attachments: [
                     {
@@ -30,7 +30,7 @@ export default async ({blocks}:any, {user_id}:any,{search_value}:any,{search_pla
             url,
             method: "POST",
             data: {
-                channel: "tb-slack-library",
+                channel: `${process.env.POST_CHANNEL_NAME}`,
                 text:`:mag:　:books: ${search_value} :office: ${search_place} の検索結果\n:penguin:　${search_result.length}件の本が見つかりました！`,
                 attachments: [
                     {
@@ -43,6 +43,6 @@ export default async ({blocks}:any, {user_id}:any,{search_value}:any,{search_pla
         })
         .catch(console.error)
     }
-    
-       
+
+
 }
