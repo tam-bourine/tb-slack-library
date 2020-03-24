@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "node --experimental-modules ./src/App.ts",
+    "start": "./node_modules/.bin/ts-node ./src/App.ts",
     "start:dev": "./node_modules/.bin/nodemon"
   },
   "dependencies": {
