@@ -1,4 +1,3 @@
-// @ts-ignore
 import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import {PurchaseRequestModal, SearchFormModal} from "./Modals"
