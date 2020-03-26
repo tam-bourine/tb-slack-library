@@ -26,6 +26,17 @@ export default ({pages}:any,{page}:any, {postResult}:any)=>{
                     "type": "button",
                     "text": {
                         "type": "plain_text",
+                        "text": "検索条件を変更する",
+                        "emoji": true
+                    },
+                    "value": "click_me_123",
+                    "action_id": "searchBooks",
+                    "style": "primary"
+                },
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
                         "emoji": true,
                         "text": "前の10件を表示する"
                     },
