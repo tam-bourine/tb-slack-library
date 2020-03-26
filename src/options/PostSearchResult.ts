@@ -1,48 +1,14 @@
-import axios from "axios";
-
+import AxiosEphemeralPost from "./Axios/AxiosEphemeralPost";
 export default async ({blocks}:any, {user_id}:any,{search_value}:any,{search_place}:any, {search_result}:any)=>{
-    const url = "https://slack.com/api/chat.postEphemeral"
     if(search_place == "unselected"){
-        await axios.request({
-            headers:{
-                'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
-            },
-            url,
-            method: "POST",
-            data: {
-                channel: `${process.env.POST_CHANNEL_NAME}`,
-                text:`:mag:　:books: ${search_value} の検索結果\n:penguin:　${search_result.length}件の本が見つかりました！`,
-                attachments: [
-                    {
-                        "color": "#64B5F6",
-                        "blocks": blocks
-                    }
-                ],
-                user: user_id
-            }
-        })
-        .catch(console.error)
+        //オフィスが選ばれている時
+        const text:string = `:mag:　:books: ${search_value} の検索結果\n:penguin:　${search_result.length}件の本が見つかりました！`
+        const color:string = "#64B5F6";
+        await AxiosEphemeralPost({blocks:blocks}, {text:text}, {color:color}, {user_id:user_id})
     }else{
-        await axios.request({
-            headers:{
-                'authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`
-            },
-            url,
-            method: "POST",
-            data: {
-                channel: `${process.env.POST_CHANNEL_NAME}`,
-                text:`:mag:　:books: ${search_value} :office: ${search_place} の検索結果\n:penguin:　${search_result.length}件の本が見つかりました！`,
-                attachments: [
-                    {
-                        "color": "#64B5F6",
-                        "blocks": blocks
-                    }
-                ],
-                user: user_id
-            }
-        })
-        .catch(console.error)
+        //オフィスが選ばれていない時
+        const text:string = `:mag:　:books: ${search_value} :office: ${search_place} の検索結果\n:penguin:　${search_result.length}件の本が見つかりました！`
+        const color:string = "#64B5F6";
+        await AxiosEphemeralPost({blocks:blocks}, {text:text}, {color:color}, {user_id:user_id})
     }
-
-
 }
