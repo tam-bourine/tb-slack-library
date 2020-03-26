@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import {PurchaseRequestModal, SearchFormModal} from "./Modals"
 import { ShowResult, PurchaseRequestSelect, ChangePage } from "./Views";
-import { DeleteMessage,PostPurchaseRequest, PostSearchResult, PostCompleate, PostFailed, PostRequestCancel } from "./Options"
+import { DeleteMessage,PostPurchaseRequest, PostSearchResult, PostCompleate, PostFailed, PostRequestCancel, PostChangePage } from "./Options"
 import { B_RequestFailed, B_RequestComplete, B_RequestCancel} from "./views/blocks/Blocks"
 import axios from 'axios';
 
@@ -79,29 +79,29 @@ app.view('search_books', async ({ack, body, view})=>{
                 await PostSearchResult({blocks:blocks},{user_id:user_id},{search_value:search_value},{search_place:search_place},{search_result:search_result})
                 //次のページの検索結果を見る
                 let page:number = 1
-                app.action('nextPage',async ({ack,body})=>{
+                app.action('nextPage',async ({ack,body,payload})=>{
                     ack()
                     //前のコメントを削除
-                    const deleteUrl:string = body.response_url
-                    await DeleteMessage({deleteUrl:deleteUrl})
+                    const responseUrl:string = body.response_url
+                    await DeleteMessage({deleteUrl:responseUrl})
                     //ページの変更
                     if (page<100000){
                         page ++
                         blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                        await PostSearchResult({blocks:blocks},{user_id:user_id},{search_value:search_value},{search_place:search_place},{search_result:search_result})
+                        await PostChangePage({responseUrl:responseUrl},{blocks:blocks})
                     }
                 });
                     //前のページの検索結果を見る
                 app.action('behindPage',async ({ack,body})=>{
                     ack()
                     //前のコメントを削除
-                    const deleteUrl:string = body.response_url
-                    await DeleteMessage({deleteUrl:deleteUrl})
+                    const responseUrl:string = body.response_url
+                    await DeleteMessage({deleteUrl:responseUrl})
                     //ページの移動
                     if (page<100000){
                         page --
                         blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                        await PostSearchResult({blocks:blocks},{user_id:user_id},{search_value:search_value},{search_place:search_place},{search_result:search_result})
+                        await PostChangePage({responseUrl:responseUrl},{blocks:blocks})
                     }
                 })
                 //検索を終了する
