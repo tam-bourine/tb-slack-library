@@ -22,6 +22,8 @@ ngrok http {{port number}}
 ## Directory
 `modals` input only modal view
 
-`options` API movement (file name initial must be method or function)
+`options` API movement (file name's initials must be method or function)
 
 `views` other fronted view
+
+`blocks` blockKit elements (file name's initials must be `B_`)
