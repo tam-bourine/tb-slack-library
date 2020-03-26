@@ -1,33 +1,40 @@
-export default({data}:any, {search_place}:any) => {
+export default({data}:any) => {
     let blockKit:Array<any> = []
-    if(search_place == "unselected"){
-        for(let i in data){
+    //オフィスが選択されていない時
+    for(let i in data){
+        if (data[i].image){
+            //画像があった時
             blockKit.push(
                 {
-                    "type": "context",
-                    "elements": [
-                        {
-                            "type": "mrkdwn",
-                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
-                        }
-                    ],
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
+                    },
+                    "accessory": {
+                        "type": "image",
+                        "image_url": `${data[i].image}`,
+                        "alt_text": "palm tree"
+                    }
                 },
                 {
                     "type": "divider"
-                },
+                }
             )
-        }
-    }else{
-        for(let i in data){
+        }else{
+            //画像がない時
             blockKit.push(
                 {
-                    "type": "context",
-                    "elements": [
-                        {
-                            "type": "mrkdwn",
-                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}`
-                        }
-                    ],
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
+                    },
+                    "accessory": {
+                        "type": "image",
+                        "image_url": "http://placehold.jp/150x150.png?text=no_image",
+                        "alt_text": "palm tree"
+                    }
                 },
                 {
                     "type": "divider"
@@ -35,11 +42,12 @@ export default({data}:any, {search_place}:any) => {
             )
         }
     }
-    
-    if (blockKit.length>20 ){
-        let pages = Math.floor(blockKit.length/20)+1
+    //ブロック数が20個を超えていたときの処理
+    const splitNum:number = 20
+    if (blockKit.length>splitNum ){
+        let pages = Math.floor(blockKit.length/splitNum)+1
         let postResult:any = []
-        let i,j,temparray,chunk = 20;
+        let i,j,temparray,chunk = splitNum;
         for (i=0,j=blockKit.length; i<j; i+=chunk) {
             temparray = blockKit.slice(i,i+chunk);
             postResult.push(temparray)

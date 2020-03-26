@@ -74,7 +74,7 @@ app.view('search_books', async ({ack, body, view})=>{
             const user_id:string = body.user.id
             //本が見つかった時
             if(search_result.length != 0){
-                let blocks = ShowResult({data:search_result}, {search_place:search_place})
+                let blocks = ShowResult({data:search_result})
                 await PostSearchResult({blocks:blocks},{user_id:user_id},{search_value:search_value},{search_place:search_place},{search_result:search_result})
                 //次のページの検索結果を見る
                 let page:number = 1
