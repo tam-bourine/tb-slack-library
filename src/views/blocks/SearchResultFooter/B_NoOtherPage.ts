@@ -22,6 +22,17 @@ export default ({blockKit}:any)=>{
                     "value": "click_me_123",
                     "action_id": "finishSearch"
                 },
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "検索条件を変更する",
+                        "emoji": true
+                    },
+                    "value": "click_me_123",
+                    "action_id": "searchBooks",
+                    "style": "primary"
+                }
             ]
         },
         {
