@@ -1,8 +1,9 @@
 import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import {PurchaseRequestModal, SearchFormModal} from "./Modals"
-import { ShowResult, PurchaseRequestSelect, ChangePage,Compleate, Failed, RequestCancel } from "./Views";
+import { ShowResult, PurchaseRequestSelect, ChangePage } from "./Views";
 import { DeleteMessage,PostChangePage,PostPurchaseRequest, PostSearchResult, PostCompleate, PostFailed, PostRequestCancel } from "./Options"
+import { B_RequestFailed, B_RequestComplete, B_RequestCancel} from "./views/blocks/Blocks"
 import axios from 'axios';
 
 //botトークン
@@ -170,19 +171,19 @@ app.view("request_book",async ({ack,body,view,payload})=>{
         if (response.status===200){
             console.log("購入依頼完了")
             const user_id:string = body.user.id
-            let blocks = Compleate()
+            let blocks = B_RequestComplete()
             await PostCompleate({blocks:blocks},{user_id:user_id})
         } else {
             //購入依頼が失敗した時
             console.log("購入依頼失敗")
             const user_id:string = body.user.id
-            let blocks = Failed()
+            let blocks = B_RequestFailed()
             await PostFailed({blocks: blocks}, {user_id: user_id})
         }
     }).catch(async function () {
         console.log("購入依頼失敗")
         const user_id:string = body.user.id
-        let blocks = Failed()
+        let blocks = B_RequestFailed()
         await PostFailed({blocks: blocks}, {user_id: user_id})
     })
 })
@@ -190,7 +191,7 @@ app.view("request_book",async ({ack,body,view,payload})=>{
 app.view({callback_id: 'request_book', type: 'view_closed'}, async ({ body,payload, ack }) => {
     ack()
     const user_id: string = body.user.id
-    let blocks = RequestCancel()
+    let blocks = B_RequestCancel()
     await PostRequestCancel({blocks: blocks},{user_id: user_id})
 })
 //複数ページない場合はページ定義なしで終了
