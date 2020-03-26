@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import {PurchaseRequestModal, SearchFormModal} from "./Modals"
 import { ShowResult, PurchaseRequestSelect, ChangePage } from "./Views";
-import { DeleteMessage,PostChangePage,PostPurchaseRequest, PostSearchResult, PostCompleate, PostFailed, PostRequestCancel } from "./Options"
+import { DeleteMessage,PostPurchaseRequest, PostSearchResult, PostCompleate, PostFailed, PostRequestCancel } from "./Options"
 import { B_RequestFailed, B_RequestComplete, B_RequestCancel} from "./views/blocks/Blocks"
 import axios from 'axios';
 
@@ -88,7 +88,7 @@ app.view('search_books', async ({ack, body, view})=>{
                     if (page<100000){
                         page ++
                         blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                        await PostChangePage({blocks: blocks}, {user_id: user_id})
+                        await PostSearchResult({blocks:blocks},{user_id:user_id},{search_value:search_value},{search_place:search_place},{search_result:search_result})
                     }
                 });
                     //前のページの検索結果を見る
@@ -101,7 +101,7 @@ app.view('search_books', async ({ack, body, view})=>{
                     if (page<100000){
                         page --
                         blocks = ChangePage({data:search_result},{key:search_value},{page:page})
-                        await PostChangePage({blocks: blocks}, {user_id: user_id})
+                        await PostSearchResult({blocks:blocks},{user_id:user_id},{search_value:search_value},{search_place:search_place},{search_result:search_result})
                     }
                 })
                 //検索を終了する
