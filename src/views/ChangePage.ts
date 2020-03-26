@@ -1,43 +1,13 @@
+import {B_FindBookImage, B_ResultFirstPage, B_UnFindBookImage, B_ResultFinalPage, B_ResultOtherPage} from "./blocks/Blocks"
 export default({data}:any, {key}:any, {page}:any) => {
     let blockKit:Array<any> = []
     for(let i in data){
         if (data[i].image){
             //画像があった時
-            blockKit.push(
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
-                    },
-                    "accessory": {
-                        "type": "image",
-                        "image_url": `${data[i].image}`,
-                        "alt_text": "palm tree"
-                    }
-                },
-                {
-                    "type": "divider"
-                }
-            )
+            B_FindBookImage({i:i},{name:data[i].name},{place:data[i].place},{image:data[i].image},{blockKit:blockKit})
         }else{
-            blockKit.push(
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
-                    },
-                    "accessory": {
-                        "type": "image",
-                        "image_url": "http://placehold.jp/150x150.png?text=no_image",
-                        "alt_text": "palm tree"
-                    }
-                },
-                {
-                    "type": "divider"
-                }
-            )
+            //画像がない時
+            B_UnFindBookImage({i:i},{name:data[i].name},{place:data[i].place},{blockKit:blockKit})
         }
     }
     //ブロックが20個以上あったときの処理
@@ -52,197 +22,14 @@ export default({data}:any, {key}:any, {page}:any) => {
         }
         //1ページ目の時、次へボタンのみ表示
         if (page === 1){
-            postResult[page-1].push(
-                {
-                    "type": "context",
-                    "elements":[
-                        {
-                            "type": "mrkdwn",
-                            "text": `${pages}ページ中1ページ目を表示中`
-                        }
-                    ]
-                },
-                {
-                    "type": "actions",
-                    "elements": [
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "検索を終了する",
-                                "emoji": true
-                            },
-                            "value": "click_me_123",
-                            "action_id": "finishSearch"
-                        },
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "次の10件を表示する",
-                                "emoji": true
-                            },
-                            "style": "primary",
-                            "value": "click_me_123",
-                            "action_id": "nextPage"
-                        },
-                    ]
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "探していた本は見つかりましたか？:smile:\n:pencil: 見つからない場合、購入依頼を出すことが出来ます！"
-                    },
-                    "accessory": {
-                        "type": "button",
-                        "style":"primary",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "購入依頼を出す",
-                            "emoji": true
-                        },
-                        "value": "click_me_123",
-                        "action_id": "purchaseRequest"
-                    }
-                }
-            )
+            return B_ResultFirstPage({pages:pages},{postResult:postResult[0]})
         } else if (page === pages){
             //最終ページの時、戻るボタンのみ表示
-            postResult[page-1].push(
-                {
-                    "type": "context",
-                    "elements":[
-                        {
-                            "type": "mrkdwn",
-                            "text": `${pages}ページ中${page}ページ目を表示中`
-                        }
-                    ]
-                },
-                {
-                    "type": "actions",
-                    "elements": [
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "検索を終了する",
-                                "emoji": true
-                            },
-                            "value": "click_me_123",
-                            "action_id": "finishSearch"
-                        },
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "emoji": true,
-                                "text": "前の10件を表示する"
-                            },
-                            "style": "danger",
-                            "value": "出す",
-                            "action_id": "behindPage",
-                        },
-                    ]
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "探していた本は見つかりましたか？:smile:\n:pencil: 見つからない場合、購入依頼を出すことが出来ます！"
-                    },
-                    "accessory": {
-                        "type": "button",
-                        "style":"primary",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "購入依頼を出す",
-                            "emoji": true
-                        },
-                        "value": "click_me_123",
-                        "action_id": "purchaseRequest"
-                    }
-                }
-            )
+            return B_ResultFinalPage({pages:pages},{page:page},{postResult:postResult[page-1]})
         } else {
             //それ以外の遷移処理
-            postResult[page-1].push(
-                {
-                    "type": "context",
-                    "elements":[
-                        {
-                            "type": "mrkdwn",
-                            "text": `${pages}ページ中${page}ページ目を表示中`
-                        }
-                    ]
-                },
-                {
-                    "type": "actions",
-                    "elements": [
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "検索を終了する",
-                                "emoji": true
-                            },
-                            "value": "click_me_123",
-                            "action_id": "finishSearch"
-                        },
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "emoji": true,
-                                "text": "前の10件を表示する"
-                            },
-                            "style": "danger",
-                            "value": "出す",
-                            "action_id": "behindPage",
-                        },
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "次の10件を表示する",
-                                "emoji": true
-                            },
-                            "style": "primary",
-                            "value": "click_me_123",
-                            "action_id": "nextPage"
-                        },
-                    ]
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "探していた本は見つかりましたか？:smile:\n:pencil: 見つからない場合、購入依頼を出すことが出来ます！"
-                    },
-                    "accessory": {
-                        "type": "button",
-                        "style":"primary",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "購入依頼を出す",
-                            "emoji": true
-                        },
-                        "value": "click_me_123",
-                        "action_id": "purchaseRequest"
-                    }
-                }
-            )
+            return B_ResultOtherPage({pages:pages},{page:page},{postResult:postResult[page-1]})
         }
-        return postResult[page-1]
     }else {
         return blockKit
     }
