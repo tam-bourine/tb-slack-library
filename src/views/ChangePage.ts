@@ -1,47 +1,25 @@
 export default({data}:any, {key}:any, {page}:any) => {
     let blockKit:Array<any> = []
     for(let i in data){
-        if (data[i].image.match(/ISBN/)){
+        if (data[i].image){
             //画像があった時
-
-            if (""){
-                console.log("hoge")
-                blockKit.push(
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
-                        },
-                        "accessory": {
-                            "type": "image",
-                            "image_url": ``,
-                            "alt_text": "palm tree"
-                        }
+            blockKit.push(
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
                     },
-                    {
-                        "type": "divider"
+                    "accessory": {
+                        "type": "image",
+                        "image_url": `${data[i].image}`,
+                        "alt_text": "palm tree"
                     }
-                )
-            }else {
-                blockKit.push(
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": `${parseInt(i)+1}件目\n:books:${data[i].name}\n:office:${data[i].place}`
-                        },
-                        "accessory": {
-                            "type": "image",
-                            "image_url": "http://placehold.jp/150x150.png?text=no_image",
-                            "alt_text": "palm tree"
-                        }
-                    },
-                    {
-                        "type": "divider"
-                    }
-                )
-            }
+                },
+                {
+                    "type": "divider"
+                }
+            )
         }else{
             blockKit.push(
                 {

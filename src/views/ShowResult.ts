@@ -2,7 +2,7 @@ export default({data}:any) => {
     let blockKit:Array<any> = []
     //オフィスが選択されていない時
     for(let i in data){
-        if (data[i].image.match(/ISBN/)){
+        if (data[i].image){
             //画像があった時
             blockKit.push(
                 {
@@ -13,7 +13,7 @@ export default({data}:any) => {
                     },
                     "accessory": {
                         "type": "image",
-                        "image_url": "https://api.slack.com/img/blocks/bkb_template_images/palmtree.png",
+                        "image_url": `${data[i].image}`,
                         "alt_text": "palm tree"
                     }
                 },
