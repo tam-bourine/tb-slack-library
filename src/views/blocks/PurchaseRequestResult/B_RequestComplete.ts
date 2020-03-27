@@ -1,4 +1,4 @@
-export default ()=>{
+export default ({reqTitle}:any,{reqImage}:any)=>{
     const blockKit = [
         {
             "type": "context",
@@ -8,6 +8,18 @@ export default ()=>{
                     "text": ":white_check_mark:　購入依頼が完了しました！\nやったぜ！ボタンを押すとこのコメントを消すことが出来ます :paperclip:"
                 }
             ]
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": `${reqTitle}の購入依頼を出しました！`
+            },
+            "accessory": {
+                "type": "image",
+                "image_url": `${reqImage}`,
+                "alt_text": "palm tree"
+            }
         },
         {
             "type": "actions",

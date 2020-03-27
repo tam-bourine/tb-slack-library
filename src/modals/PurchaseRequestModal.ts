@@ -39,6 +39,24 @@ export default ():any => {
             },
             {
                 "type": "input",
+                "block_id": "isbn",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "isbn",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "例) 9784798140568",
+                        "emoji": false
+                    }
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "ISBN",
+                    "emoji": true
+                }
+            },
+            {
+                "type": "input",
                 "block_id": "place",
                 "label": {
                     "type": "plain_text",

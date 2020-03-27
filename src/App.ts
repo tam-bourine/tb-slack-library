@@ -145,6 +145,7 @@ app.action("purchaseRequest",async ({ack,body,context})=>{
 interface RequestStateValue {
     values: {
         title:{title: {value: string}}
+        isbn:{isbn: {value: string}}
         place:{place: {selected_option: {value: string}}}
         about:{about: {value:string}}
     }
@@ -157,21 +158,27 @@ app.view("request_book",async ({ack,body,view,payload})=>{
     const request_state_value = (view.state as RequestStateValue).values
     const request_user:string = body.user.name
     const request_title:string = request_state_value.title.title.value
+    const request_isbn:string = request_state_value.isbn.isbn.value
     const request_place:string = request_state_value.place.place.selected_option.value
     const request_about:string = request_state_value.about.about.value
     const url:string = `${process.env.GAS_SPREAD_SHEET}`
     await axios.post(url,{
         reqUser: request_user,
         reqTitle: request_title,
+        reqIsbn: request_isbn,
         reqPlace: request_place,
-        reqAbout: request_about
+        reqAbout: request_about,
     }).then(async function (response) {
         ack()
         //購入依頼が完了した時
         if (response.status===200){
             console.log("購入依頼完了")
+            let reqImage = response.data.image || "noImage"
+            if (reqImage === "noImage"){
+                reqImage = "http://placehold.jp/150x150.png?text=no_image"
+            }
             const user_id:string = body.user.id
-            let blocks = B_RequestComplete()
+            let blocks = B_RequestComplete({reqTitle:request_title}, {reqImage:reqImage})
             await PostCompleate({blocks:blocks},{user_id:user_id})
         } else {
             //購入依頼が失敗した時
@@ -194,7 +201,8 @@ app.view({callback_id: 'request_book', type: 'view_closed'}, async ({ body,paylo
     let blocks = B_RequestCancel()
     await PostRequestCancel({blocks: blocks},{user_id: user_id})
 })
-//複数ページない場合はページ定義なしで終了
+
+//検索を終了
 app.action("finishSearch",async ({ack,body})=>{
     ack()
     const deleteUrl:string = body.response_url
