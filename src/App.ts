@@ -2,8 +2,8 @@ import dotenv from 'dotenv'
 import {App} from '@slack/bolt'
 import {PurchaseRequestModal, SearchFormModal} from "./Modals"
 import { ShowResult, PurchaseRequestSelect, ChangePage } from "./Views";
-import { DeleteMessage,PostPurchaseRequest, PostSearchResult, PostCompleate, PostFailed, PostRequestCancel, PostChangePage } from "./Options"
-import { B_RequestFailed, B_RequestComplete, B_RequestCancel} from "./views/blocks/Blocks"
+import { DeleteMessage,PostPurchaseRequest, PostSearchResult, PostFailed, PostRequestCancel, PostChangePage } from "./Options"
+import { PurchaseResponse} from "./Apps"
 import axios from 'axios';
 
 //botトークン
@@ -171,35 +171,18 @@ app.view("request_book",async ({ack,body,view,payload})=>{
     }).then(async function (response) {
         ack()
         //購入依頼が完了した時
-        if (response.status===200){
-            console.log("購入依頼完了")
-            let reqImage = response.data.image || "noImage"
-            if (reqImage === "noImage"){
-                reqImage = "http://placehold.jp/150x150.png?text=no_image"
-            }
-            const user_id:string = body.user.id
-            let blocks = B_RequestComplete({reqTitle:request_title}, {reqImage:reqImage})
-            await PostCompleate({blocks:blocks},{user_id:user_id})
-        } else {
-            //購入依頼が失敗した時
-            console.log("購入依頼失敗")
-            const user_id:string = body.user.id
-            let blocks = B_RequestFailed()
-            await PostFailed({blocks: blocks}, {user_id: user_id})
-        }
+        await PurchaseResponse({response:response}, {body:body},{request_title:request_title})
     }).catch(async function () {
         console.log("購入依頼失敗")
         const user_id:string = body.user.id
-        let blocks = B_RequestFailed()
-        await PostFailed({blocks: blocks}, {user_id: user_id})
+        await PostFailed({user_id: user_id})
     })
 })
 //購入依頼がキャンセルされた時
 app.view({callback_id: 'request_book', type: 'view_closed'}, async ({ body,payload, ack }) => {
     ack()
     const user_id: string = body.user.id
-    let blocks = B_RequestCancel()
-    await PostRequestCancel({blocks: blocks},{user_id: user_id})
+    await PostRequestCancel({user_id: user_id})
 })
 
 //検索を終了
