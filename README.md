@@ -5,7 +5,7 @@ Using Bolt + TypeScript
 ## API
 slack api
 
-google application script (GAS)
+google apps script (GAS)
 
 gas repository is here => https://github.com/tam-bourine/tb-slack-library-gas
 
