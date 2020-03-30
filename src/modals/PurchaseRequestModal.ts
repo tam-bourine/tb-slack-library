@@ -53,7 +53,8 @@ export default ():any => {
                     "type": "plain_text",
                     "text": "ISBN",
                     "emoji": true
-                }
+                },
+                "optional": true,
             },
             {
                 "type": "input",
