@@ -27,3 +27,7 @@ ngrok http {{port number}}
 `views` other fronted view
 
 `blocks` blockKit elements (file name's initials must be `B_`)
+
+## description
+
+here => [仕様まとめ](DESCRIPTION.md)
